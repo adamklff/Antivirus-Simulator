@@ -1,13 +1,9 @@
-#include "../include/cleanup.h"
+#include "cleanup.h"
 
-/*
-purge_all:
-  - Appeler free_list pour Clean, Suspect, Quarantine
-  - Appeler free_sigs pour Signatures
-  - Mettre tous les pointeurs à NULL
-*/
-
-void purge_all() {
-    // TODO: Implémenter
+void purge_all(void)
+{
+    free_list(&Clean);
+    free_list(&Suspect);
+    free_list(&Quarantine);
+    free_sigs(&Signatures);
 }
-

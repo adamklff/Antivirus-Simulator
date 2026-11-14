@@ -1,114 +1,27 @@
-# 🛡️ Toy Antivirus – Notre projet étudiant
+# Antivirus Simulator
 
-## 👥 Contributeurs
-- YASSINE  | Étape 1️⃣ : Structures et prototypes
-- MARWA    | Étape 3️⃣ : Gestion des signatures
-- HAMZA    | Étape 5️⃣ : Nettoyage
-- ADAM     | Étape 2️⃣ : Gestion des fichiers
-- MALAK    | Étape 4️⃣ : Scan
+A C command-line exercise in signature matching, linked lists, and memory management. Enter sample text, define signatures, then scan and move matching samples between in-memory lists.
 
----
+## Build and try it
 
-## 📝 À propos du projet
+Requires GCC and Make. Run `make`, then `./toy_antivirus`.
 
-Nous créerons un simulateur antivirus en C pour apprendre à manipuler des fichiers et des signatures avec des listes chaînées.  
+```text
+ADD_SIG DEMO_MARKER
+LOAD notes Ordinary sample
+LOAD test This sample contains DEMO_MARKER
+SCAN
+REPORT
+QUAR test
+REPORT
+RESTORE test
+EXIT
+```
 
-💡 Ce projet ne contiendra aucun vrai virus, il servira uniquement à comprendre comment un antivirus fonctionnera :  
+`SCAN` searches the Clean list for case-sensitive byte sequences. `QUAR` moves a suspect sample into the Quarantine list. `RESTORE` returns a quarantined sample to Clean, where it can be scanned again. `PURGE` clears all samples and signatures. Quarantine is an in-memory state and the CLI accepts typed sample text.
 
-- Nous gérerons des fichiers et des signatures  
-- Nous implémenterons un scan simple basé sur des patterns  
-- Nous déplacerons des fichiers entre listes (Clean, Suspect, Quarantine)  
-- Nous créerons une interface CLI pour interagir avec le programme  
-- Nous gérerons manuellement la mémoire (`malloc` / `free`)  
+## Credit
 
----
+This is a group coursework fork of [creepout777/antivirus-simulator](https://github.com/creepout777/antivirus-simulator). The original task allocation assigned data structures and prototypes to Yassine, file-list management to Adam, signatures to Marwa, scanning to Malak, and cleanup to Hamza. The runnable follow-up was completed with AI assistance.
 
-## 🕒 Chronologie du développement
-
-Voici comment nous construirons notre projet, étape par étape :  
-
-### Étape 1️⃣ : Structures et prototypes
-
-**Fichiers :** `filelist.h` + `siglist.h`  
-
-Nous commencerons par définir `FileRec` et `Sig`, ainsi que toutes les fonctions principales que nous utiliserons ensuite.  
-
-🎯 **Objectif :** poser les fondations pour tout le projet.
-
----
-
-### Étape 2️⃣ : Gestion des fichiers
-
-**Fichier :** `filelist.c`  
-
-Nous coderons :  
-
-- Création de fichiers (`create_file`)  
-- Ajout dans une liste (`insert_file`)  
-- Suppression ou recherche (`remove_file`, `find_file`)  
-- Déplacement entre listes (`move_file`)  
-- Affichage et libération mémoire (`print_list`, `free_list`)  
-
-✅ Nous testerons chaque fonction avec un petit `main` temporaire pour vérifier que les pointeurs fonctionneront correctement.
-
----
-
-### Étape 3️⃣ : Gestion des signatures
-
-**Fichier :** `siglist.c`  
-
-Nous coderons :  
-
-- Création de signatures (`create_sig`)  
-- Ajout / suppression (`insert_sig`, `delete_sig`)  
-- Affichage et libération mémoire (`print_sigs`, `free_sigs`)  
-
-Nous vérifierons que l’ajout et la suppression fonctionneront avant de coder le scan.
-
----
-
-### Étape 4️⃣ : Scan
-
-**Fichier :** `scan.c`  
-
-Nous coderons :  
-
-- Parcours de la liste Clean  
-- Comparaison avec toutes les signatures (`strstr`)  
-- Déplacement des fichiers suspects vers Suspect  
-- Mise à jour du flag `suspicious = 1`  
-
-⚠️ Nous gérerons correctement les pointeurs pour ne pas casser la liste.
-
----
-
-### Étape 5️⃣ : Nettoyage
-
-**Fichier :** `cleanup.c`  
-
-Nous coderons `purge_all()` pour :  
-
-- Libérer toutes les listes : Clean, Suspect, Quarantine, Signatures  
-- Mettre tous les pointeurs à NULL pour éviter les fuites mémoire  
-
-🧹 Cette étape nous permettra de vérifier que la gestion de la mémoire sera correcte.
-
----
-
-### Étape 6️⃣ : Interface CLI
-
-**Fichier :** `main.c`  
-
-Nous coderons la boucle principale et les commandes :  
-
-- `ADD_SIG` / `DEL_SIG`  
-- `LOAD`  
-- `SCAN`  
-- `QUAR` / `RESTORE`  
-- `REPORT`  
-- `PURGE` / `EXIT`  
-
-🖥️ Nous commencerons par tester les commandes simples (`ADD_SIG`, `LOAD`, `REPORT`) puis nous intégrerons `SCAN` et `QUAR`.
-
----
-
+Licensed under the [MIT License](LICENSE).
