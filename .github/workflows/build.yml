@@ -1,0 +1,17 @@
+name: Build and smoke test
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test Antivirus Simulator
+        shell: bash
+        run: |
+          make CFLAGS="-std=c99 -Wall -Wextra -Wpedantic -Werror -g -Iinclude"
+          printf 'ADD_SIG DEMO_MARKER\nLOAD notes Ordinary sample\nLOAD test This contains DEMO_MARKER\nSCAN\nQUAR test\nREPORT\nRESTORE test\nREPORT\nPURGE\nEXIT\n' | ./toy_antivirus > actual.txt
+          grep -Fx 'Suspect: test' actual.txt
+          grep -Fx '  notes (15 bytes)' actual.txt
+          test "$(grep -Fc '  test (25 bytes)' actual.txt)" -eq 2

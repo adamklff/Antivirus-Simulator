@@ -1,60 +1,63 @@
+#include "siglist.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/siglist.h"
 
-// Liste globale de signatures
-Sig *Signatures = NULL;
+Sig *Signatures;
 
-/*
-create_sig:
-  - Allouer un Sig
-  - Copier pattern avec strdup
-  - next = NULL
-*/
-
-Sig* create_sig(const char *pattern) {
-    // TODO: Implémenter
-    return NULL;
+Sig *create_sig(const char *pattern)
+{
+    if (!pattern || !*pattern)
+        return NULL;
+    Sig *sig = malloc(sizeof *sig);
+    if (!sig)
+        return NULL;
+    sig->pattern = malloc(strlen(pattern) + 1);
+    if (!sig->pattern) {
+        free(sig);
+        return NULL;
+    }
+    strcpy(sig->pattern, pattern);
+    sig->next = NULL;
+    return sig;
 }
 
-/*
-insert_sig:
-  - Ajouter la signature en tête de liste
-*/
-
-void insert_sig(Sig **head, Sig *node) {
-    // TODO: Implémenter
+void insert_sig(Sig **head, Sig *node)
+{
+    if (!node)
+        return;
+    node->next = *head;
+    *head = node;
 }
 
-/*
-delete_sig:
-  - Parcourir la liste
-  - Comparer le pattern
-  - Gérer tête, milieu, queue
-  - Free pattern et node
-*/
-
-void delete_sig(Sig **head, const char *pattern) {
-    // TODO: Implémenter
+void delete_sig(Sig **head, const char *pattern)
+{
+    while (*head) {
+        Sig *sig = *head;
+        if (strcmp(sig->pattern, pattern) == 0) {
+            *head = sig->next;
+            free(sig->pattern);
+            free(sig);
+            return;
+        }
+        head = &sig->next;
+    }
 }
 
-/*
-print_sigs:
-  - Parcourir et afficher chaque pattern
-*/
-
-void print_sigs(Sig *head) {
-    // TODO: Implémenter
+void print_sigs(Sig *head)
+{
+    puts("Signatures");
+    for (; head; head = head->next)
+        printf("  %s\n", head->pattern);
 }
 
-/*
-free_sigs:
-  - Parcourir, free pattern et node
-  - Mettre head = NULL
-*/
-
-void free_sigs(Sig **head) {
-    // TODO: Implémenter
+void free_sigs(Sig **head)
+{
+    while (*head) {
+        Sig *sig = *head;
+        *head = sig->next;
+        free(sig->pattern);
+        free(sig);
+    }
 }
-

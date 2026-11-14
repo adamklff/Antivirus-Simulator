@@ -1,88 +1,91 @@
+#include "filelist.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/filelist.h"
 
-// Déclarez les listes globales
-FileRec *Clean = NULL;
-FileRec *Suspect = NULL;
-FileRec *Quarantine = NULL;
+FileRec *Clean;
+FileRec *Suspect;
+FileRec *Quarantine;
 
-/*
-create_file:
-  - Allouer un FileRec
-  - Copier le nom avec strdup
-  - Allouer et copier le contenu si size > 0
-  - Initialiser suspicious à 0 et next à NULL
-  - Retourner le pointeur
-*/
+static void free_file(FileRec *file)
+{
+    free(file->bytes);
+    free(file->name);
+    free(file);
+}
 
-FileRec* create_file(const char *name, const unsigned char *data, size_t size) {
-    // TODO: Implémenter
+FileRec *create_file(const char *name, const unsigned char *data, size_t size)
+{
+    if (!name || (size && !data))
+        return NULL;
+
+    FileRec *file = calloc(1, sizeof *file);
+    if (!file)
+        return NULL;
+
+    file->name = malloc(strlen(name) + 1);
+    file->bytes = size ? malloc(size) : NULL;
+    if (!file->name || (size && !file->bytes)) {
+        free_file(file);
+        return NULL;
+    }
+
+    strcpy(file->name, name);
+    if (size)
+        memcpy(file->bytes, data, size);
+    file->size = size;
+    return file;
+}
+
+void insert_file(FileRec **head, FileRec *node)
+{
+    if (!node)
+        return;
+    node->next = *head;
+    *head = node;
+}
+
+FileRec *remove_file(FileRec **head, const char *name)
+{
+    while (*head) {
+        FileRec *file = *head;
+        if (strcmp(file->name, name) == 0) {
+            *head = file->next;
+            file->next = NULL;
+            return file;
+        }
+        head = &file->next;
+    }
     return NULL;
 }
 
-/*
-insert_file:
-  - Ajouter node en tête de la liste
-*/
-
-void insert_file(FileRec **head, FileRec *node) {
-    // TODO: Implémenter
-}
-
-/*
-remove_file:
-  - Chercher un fichier par nom
-  - Gérer tête, milieu, queue
-  - Détacher node et le retourner
-*/
-
-FileRec* remove_file(FileRec **head, const char *name) {
-    // TODO: Implémenter
+FileRec *find_file(FileRec *head, const char *name)
+{
+    for (; head; head = head->next) {
+        if (strcmp(head->name, name) == 0)
+            return head;
+    }
     return NULL;
 }
 
-/*
-find_file:
-  - Parcourir la liste pour trouver un fichier par nom
-  - Retourner le pointeur si trouvé, NULL sinon
-*/
-
-FileRec* find_file(FileRec *head, const char *name) {
-    // TODO: Implémenter
-    return NULL;
+void move_file(FileRec **from, FileRec **to, const char *name)
+{
+    insert_file(to, remove_file(from, name));
 }
 
-/*
-move_file:
-  - Appeler remove_file pour retirer le fichier
-  - Appeler insert_file pour l'ajouter dans la nouvelle liste
-*/
-
-void move_file(FileRec **from, FileRec **to, const char *name) {
-    // TODO: Implémenter
+void print_list(const char *title, FileRec *head)
+{
+    printf("%s\n", title);
+    for (; head; head = head->next)
+        printf("  %s (%zu bytes)\n", head->name, head->size);
 }
 
-/*
-print_list:
-  - Parcourir la liste
-  - Afficher nom, taille, état (suspect ou clean)
-  - Afficher le total de fichiers et de bytes
-*/
-
-void print_list(const char *title, FileRec *head) {
-    // TODO: Implémenter
+void free_list(FileRec **head)
+{
+    while (*head) {
+        FileRec *file = *head;
+        *head = file->next;
+        free_file(file);
+    }
 }
-
-/*
-free_list:
-  - Parcourir la liste
-  - Free bytes, free name, free node
-  - Mettre head = NULL à la fin
-*/
-
-void free_list(FileRec **head) {
-    // TODO: Implémenter
-}
-

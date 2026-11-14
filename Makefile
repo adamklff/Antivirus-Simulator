@@ -3,7 +3,7 @@ TARGET = toy_antivirus
 
 # Compilateur et options
 CC = gcc
-CFLAGS = -Wall -Wextra -g -std=c99 -Iincludes
+CFLAGS = -Wall -Wextra -g -std=c99 -Iinclude
 
 # Fichiers sources
 SRCS = src/main.c src/filelist.c src/siglist.c src/scan.c src/cleanup.c
